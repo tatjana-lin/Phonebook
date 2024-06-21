@@ -1,28 +1,60 @@
 package com.phonebook.tests;
 
+import com.phonebook.data.UserData;
+import com.phonebook.models.User;
 import org.testng.Assert;
-import org.testng.annotations.Test;
+import org.testng.annotations.*;
 
 public class LoginTests extends TestBase {
 
-    @Test
+//    @BeforeClass
+//    public void beforeClassPrecondition(){
+//        System.out.println("Before Class");
+//    }
+//
+//    @BeforeTest
+//    public void beforeTestPrecondition(){
+//        System.out.println("Before Test");
+//    }
+//
+//    @AfterClass
+//    public void afterClassPrecondition(){
+//        System.out.println("After Class");
+//    }
+//
+//    @AfterTest
+//    public void afterTestPrecondition(){
+//        System.out.println("After Test");
+//    }
+
+    @BeforeMethod
+    public void ensurePrecondition(){
+//        System.out.println("Before Method");
+        if(!app.getUser().isLoginLinkPresent()){
+            app.getUser().clickOnSignOutButton();
+        }
+    }
+
+    @Test(priority = 1)
     public void loginPositiveTest(){
+
+        logger.info("Login with data ->" + UserData.EMAIL + "***" + UserData.PASSWORD);
 
         app.getUser().clickOnLoginLink();
         app.getUser().fillRegisterLoginForm(new User()
-                .setEmail("valid@email.com")
-                .setPassword("ValidPass123$"));
+                .setEmail(UserData.EMAIL)
+                .setPassword(UserData.PASSWORD));
         app.getUser().clickOnLoginButton();
 
         Assert.assertTrue(app.getUser().isSignOutButtonPresent());
     }
 
-    @Test
+    @Test(priority = 2)
     public void loginNegativeWithoutEmailTest(){
 
         app.getUser().clickOnLoginLink();
         app.getUser().fillRegisterLoginForm(new User()
-                .setPassword("ValidPass123$"));
+                .setPassword(UserData.PASSWORD));
         app.getUser().clickOnLoginButton();
 
         Assert.assertTrue(app.getUser().isAlertPresent());
